@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Likes & Dislikes</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    padding: 16px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .legend-like {
+    background: #e8f5e9;
+    border: 3px solid #00c853;
+    color: #1b5e20;
+    font-weight: 900;
+    font-size: 1rem;
+    padding: 8px 20px;
+    border-radius: 50px;
+  }
+
+  .legend-dislike {
+    background: #fce4ec;
+    border: 3px solid #ff1744;
+    color: #b71c1c;
+    font-weight: 900;
+    font-size: 1rem;
+    padding: 8px 20px;
+    border-radius: 50px;
+  }
+
+  .category {
+    background: white;
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.09);
+  }
+
+  .category-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #1a1a2e;
+    margin-bottom: 14px;
+    border-bottom: 3px solid #eee;
+    padding-bottom: 10px;
+  }
+
+  .items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+
+  .item-card {
+    border-radius: 14px;
+    border: 3px solid #ddd;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 6px 10px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .item-card.liked {
+    border-color: #00c853;
+    background: #e8f5e9;
+    box-shadow: 0 0 0 2px #00c853;
+  }
+
+  .item-card.disliked {
+    border-color: #ff1744;
+    background: #fce4ec;
+    box-shadow: 0 0 0 2px #ff1744;
+  }
+
+  .item-emoji {
+    font-size: 2.4rem;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .item-label {
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-align: center;
+    color: #222;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 5px;
+    width: 100%;
+  }
+
+  .btn-like {
+    flex: 1;
+    background: #00c853;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .btn-dislike {
+    flex: 1;
+    background: #ff1744;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .btn-like:active, .btn-dislike:active { opacity: 0.75; }
+
+  /* Summary */
+  #summary {
+    background: #1a1a2e;
+    border-radius: 16px;
+    padding: 20px;
+    color: white;
+    margin-top: 10px;
+    display: none;
+  }
+
+  #summary h2 {
+    text-align: center;
+    font-size: 1.3rem;
+    margin-bottom: 14px;
+  }
+
+  .summary-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .sum-title {
+    font-weight: 900;
+    font-size: 0.95rem;
+    padding: 5px 12px;
+    border-radius: 50px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+
+  .sum-likes .sum-title { background: #00c853; }
+  .sum-dislikes .sum-title { background: #ff1744; }
+
+  #likes-list, #dislikes-list {
+    list-style: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .action-btns {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .print-btn {
+    padding: 12px 30px;
+    background: #1a1a2e;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .reset-btn {
+    background: none;
+    border: 2px solid #aaa;
+    color: #555;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 7px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+  }
+
+  @media print {
+    .btn-row, .action-btns { display: none !important; }
+    body { background: white; }
+  }
+</style>
+</head>
+<body>
+
+<h1>👍 My Likes &amp; Dislikes 👎</h1>
+<p class="subtitle">Tap 👍 or 👎 on each card!</p>
+
+<div class="legend">
+  <div class="legend-like">👍 I LIKE this</div>
+  <div class="legend-dislike">👎 I DON'T like this</div>
+</div>
+
+<!-- ===================== SECTION 1: FOOD & DRINKS ===================== -->
+<div class="category">
+  <div class="category-title">🍽️ Food &amp; Drinks</div>
+  <div class="items-grid">
+    <div class="item-card" id="c0"><div class="item-emoji">🍕</div><div class="item-label">Pizza</div><div class="btn-row"><button class="btn-like" onclick="pick('c0','liked')">👍</button><button class="btn-dislike" onclick="pick('c0','disliked')">👎</button></div></div>
+    <div class="item-card" id="c1"><div class="item-emoji">🍓</div><div class="item-label">Fruit</div><div class="btn-row"><button class="btn-like" onclick="pick('c1','liked')">👍</button><button class="btn-dislike" onclick="pick('c1','disliked')">👎</button></div></div>
+    <div class="item-card" id="c2"><div class="item-emoji">🥦</div><div class="item-label">Vegetables</div><div class="btn-row"><button class="btn-like" onclick="pick('c2','liked')">👍</button><button class="btn-dislike" onclick="pick('c2','disliked')">👎</button></div></div>
+    <div class="item-card" id="c3"><div class="item-emoji">🍗</div><div class="item-label">Chicken</div><div class="btn-row"><button class="btn-like" onclick="pick('c3','liked')">👍</button><button class="btn-dislike" onclick="pick('c3','disliked')">👎</button></div></div>
+    <div class="item-card" id="c4"><div class="item-emoji">🍟</div><div class="item-label">Chips / Fries</div><div class="btn-row"><button class="btn-like" onclick="pick('c4','liked')">👍</button><button class="btn-dislike" onclick="pick('c4','disliked')">👎</button></div></div>
+    <div class="item-card" id="c5"><div class="item-emoji">🍪</div><div class="item-label">Cookies</div><div class="btn-row"><button class="btn-like" onclick="pick('c5','liked')">👍</button><button class="btn-dislike" onclick="pick('c5','disliked')">👎</button></div></div>
+    <div class="item-card" id="c6"><div class="item-emoji">💧</div><div class="item-label">Water</div><div class="btn-row"><button class="btn-like" onclick="pick('c6','liked')">👍</button><button class="btn-dislike" onclick="pick('c6','disliked')">👎</button></div></div>
+    <div class="item-card" id="c7"><div class="item-emoji">🧃</div><div class="item-label">Juice</div><div class="btn-row"><button class="btn-like" onclick="pick('c7','liked')">👍</button><button class="btn-dislike" onclick="pick('c7','disliked')">👎</button></div></div>
+    <div class="item-card" id="c8"><div class="item-emoji">🍝</div><div class="item-label">Pasta</div><div class="btn-row"><button class="btn-like" onclick="pick('c8','liked')">👍</button><button class="btn-dislike" onclick="pick('c8','disliked')">👎</button></div></div>
+    <div class="item-card" id="c9"><div class="item-emoji">🥪</div><div class="item-label">Sandwiches</div><div class="btn-row"><button class="btn-like" onclick="pick('c9','liked')">👍</button><button class="btn-dislike" onclick="pick('c9','disliked')">👎</button></div></div>
+    <div class="item-card" id="c10"><div class="item-emoji">🍦</div><div class="item-label">Ice Cream</div><div class="btn-row"><button class="btn-like" onclick="pick('c10','liked')">👍</button><button class="btn-dislike" onclick="pick('c10','disliked')">👎</button></div></div>
+    <div class="item-card" id="c11"><div class="item-emoji">🥣</div><div class="item-label">Cereal</div><div class="btn-row"><button class="btn-like" onclick="pick('c11','liked')">👍</button><button class="btn-dislike" onclick="pick('c11','disliked')">👎</button></div></div>
+  </div>
+</div>
+
+<!-- ===================== SECTION 2: ACTIVITIES & HOBBIES ===================== -->
+<div class="category">
+  <div class="category-title">🎯 Activities &amp; Hobbies</div>
+  <div class="items-grid">
+    <div class="item-card" id="a0"><div class="item-emoji">🎵</div><div class="item-label">Music</div><div class="btn-row"><button class="btn-like" onclick="pick('a0','liked')">👍</button><button class="btn-dislike" onclick="pick('a0','disliked')">👎</button></div></div>
+    <div class="item-card" id="a1"><div class="item-emoji">✏️</div><div class="item-label">Drawing</div><div class="btn-row"><button class="btn-like" onclick="pick('a1','liked')">👍</button><button class="btn-dislike" onclick="pick('a1','disliked')">👎</button></div></div>
+    <div class="item-card" id="a2"><div class="item-emoji">📺</div><div class="item-label">Videos / TV</div><div class="btn-row"><button class="btn-like" onclick="pick('a2','liked')">👍</button><button class="btn-dislike" onclick="pick('a2','disliked')">👎</button></div></div>
+    <div class="item-card" id="a3"><div class="item-emoji">📚</div><div class="item-label">Reading</div><div class="btn-row"><button class="btn-like" onclick="pick('a3','liked')">👍</button><button class="btn-dislike" onclick="pick('a3','disliked')">👎</button></div></div>
+    <div class="item-card" id="a4"><div class="item-emoji">🌳</div><div class="item-label">Outside</div><div class="btn-row"><button class="btn-like" onclick="pick('a4','liked')">👍</button><button class="btn-dislike" onclick="pick('a4','disliked')">👎</button></div></div>
+    <div class="item-card" id="a5"><div class="item-emoji">🎨</div><div class="item-label">Coloring</div><div class="btn-row"><button class="btn-like" onclick="pick('a5','liked')">👍</button><button class="btn-dislike" onclick="pick('a5','disliked')">👎</button></div></div>
+    <div class="item-card" id="a6"><div class="item-emoji">💃</div><div class="item-label">Dancing</div><div class="btn-row"><button class="btn-like" onclick="pick('a6','liked')">👍</button><button class="btn-dislike" onclick="pick('a6','disliked')">👎</button></div></div>
+    <div class="item-card" id="a7"><div class="item-emoji">🎮</div><div class="item-label">Video Games</div><div class="btn-row"><button class="btn-like" onclick="pick('a7','liked')">👍</button><button class="btn-dislike" onclick="pick('a7','disliked')">👎</button></div></div>
+    <div class="item-card" id="a8"><div class="item-emoji">🧩</div><div class="item-label">Puzzles</div><div class="btn-row"><button class="btn-like" onclick="pick('a8','liked')">👍</button><button class="btn-dislike" onclick="pick('a8','disliked')">👎</button></div></div>
+    <div class="item-card" id="a9"><div class="item-emoji">🧱</div><div class="item-label">Building</div><div class="btn-row"><button class="btn-like" onclick="pick('a9','liked')">👍</button><button class="btn-dislike" onclick="pick('a9','disliked')">👎</button></div></div>
+    <div class="item-card" id="a10"><div class="item-emoji">⚽</div><div class="item-label">Sports</div><div class="btn-row"><button class="btn-like" onclick="pick('a10','liked')">👍</button><button class="btn-dislike" onclick="pick('a10','disliked')">👎</button></div></div>
+    <div class="item-card" id="a11"><div class="item-emoji">🏊</div><div class="item-label">Swimming</div><div class="btn-row"><button class="btn-like" onclick="pick('a11','liked')">👍</button><button class="btn-dislike" onclick="pick('a11','disliked')">👎</button></div></div>
+  </div>
+</div>
+
+<!-- ===================== SECTION 3: SENSORY ===================== -->
+<div class="category">
+  <div class="category-title">✨ Sensory</div>
+  <div class="items-grid">
+    <div class="item-card" id="s0"><div class="item-emoji">📢</div><div class="item-label">Loud Sounds</div><div class="btn-row"><button class="btn-like" onclick="pick('s0','liked')">👍</button><button class="btn-dislike" onclick="pick('s0','disliked')">👎</button></div></div>
+    <div class="item-card" id="s1"><div class="item-emoji">🎶</div><div class="item-label">Soft Music</div><div class="btn-row"><button class="btn-like" onclick="pick('s1','liked')">👍</button><button class="btn-dislike" onclick="pick('s1','disliked')">👎</button></div></div>
+    <div class="item-card" id="s2"><div class="item-emoji">💡</div><div class="item-label">Bright Lights</div><div class="btn-row"><button class="btn-like" onclick="pick('s2','liked')">👍</button><button class="btn-dislike" onclick="pick('s2','disliked')">👎</button></div></div>
+    <div class="item-card" id="s3"><div class="item-emoji">🌙</div><div class="item-label">Dim Lights</div><div class="btn-row"><button class="btn-like" onclick="pick('s3','liked')">👍</button><button class="btn-dislike" onclick="pick('s3','disliked')">👎</button></div></div>
+    <div class="item-card" id="s4"><div class="item-emoji">🧸</div><div class="item-label">Soft Textures</div><div class="btn-row"><button class="btn-like" onclick="pick('s4','liked')">👍</button><button class="btn-dislike" onclick="pick('s4','disliked')">👎</button></div></div>
+    <div class="item-card" id="s5"><div class="item-emoji">🪨</div><div class="item-label">Rough Textures</div><div class="btn-row"><button class="btn-like" onclick="pick('s5','liked')">👍</button><button class="btn-dislike" onclick="pick('s5','disliked')">👎</button></div></div>
+    <div class="item-card" id="s6"><div class="item-emoji">👕</div><div class="item-label">Tight Clothes</div><div class="btn-row"><button class="btn-like" onclick="pick('s6','liked')">👍</button><button class="btn-dislike" onclick="pick('s6','disliked')">👎</button></div></div>
+    <div class="item-card" id="s7"><div class="item-emoji">🤗</div><div class="item-label">Hugs</div><div class="btn-row"><button class="btn-like" onclick="pick('s7','liked')">👍</button><button class="btn-dislike" onclick="pick('s7','disliked')">👎</button></div></div>
+    <div class="item-card" id="s8"><div class="item-emoji">🌸</div><div class="item-label">Strong Smells</div><div class="btn-row"><button class="btn-like" onclick="pick('s8','liked')">👍</button><button class="btn-dislike" onclick="pick('s8','disliked')">👎</button></div></div>
+    <div class="item-card" id="s9"><div class="item-emoji">💨</div><div class="item-label">Fans / Wind</div><div class="btn-row"><button class="btn-like" onclick="pick('s9','liked')">👍</button><button class="btn-dislike" onclick="pick('s9','disliked')">👎</button></div></div>
+    <div class="item-card" id="s10"><div class="item-emoji">👥</div><div class="item-label">Crowds</div><div class="btn-row"><button class="btn-like" onclick="pick('s10','liked')">👍</button><button class="btn-dislike" onclick="pick('s10','disliked')">👎</button></div></div>
+    <div class="item-card" id="s11"><div class="item-emoji">🌀</div><div class="item-label">Spinning</div><div class="btn-row"><button class="btn-like" onclick="pick('s11','liked')">👍</button><button class="btn-dislike" onclick="pick('s11','disliked')">👎</button></div></div>
+  </div>
+</div>
+
+<!-- ===================== SECTION 4: PEOPLE & SOCIAL ===================== -->
+<div class="category">
+  <div class="category-title">🤝 People &amp; Social</div>
+  <div class="items-grid">
+    <div class="item-card" id="p0"><div class="item-emoji">👫</div><div class="item-label">Friends</div><div class="btn-row"><button class="btn-like" onclick="pick('p0','liked')">👍</button><button class="btn-dislike" onclick="pick('p0','disliked')">👎</button></div></div>
+    <div class="item-card" id="p1"><div class="item-emoji">👨‍👩‍👧</div><div class="item-label">Family</div><div class="btn-row"><button class="btn-like" onclick="pick('p1','liked')">👍</button><button class="btn-dislike" onclick="pick('p1','disliked')">👎</button></div></div>
+    <div class="item-card" id="p2"><div class="item-emoji">👩‍🏫</div><div class="item-label">Teachers</div><div class="btn-row"><button class="btn-like" onclick="pick('p2','liked')">👍</button><button class="btn-dislike" onclick="pick('p2','disliked')">👎</button></div></div>
+    <div class="item-card" id="p3"><div class="item-emoji">💬</div><div class="item-label">Talking</div><div class="btn-row"><button class="btn-like" onclick="pick('p3','liked')">👍</button><button class="btn-dislike" onclick="pick('p3','disliked')">👎</button></div></div>
+    <div class="item-card" id="p4"><div class="item-emoji">🧍</div><div class="item-label">Being Alone</div><div class="btn-row"><button class="btn-like" onclick="pick('p4','liked')">👍</button><button class="btn-dislike" onclick="pick('p4','disliked')">👎</button></div></div>
+    <div class="item-card" id="p5"><div class="item-emoji">👐</div><div class="item-label">Group Time</div><div class="btn-row"><button class="btn-like" onclick="pick('p5','liked')">👍</button><button class="btn-dislike" onclick="pick('p5','disliked')">👎</button></div></div>
+    <div class="item-card" id="p6"><div class="item-emoji">🙋</div><div class="item-label">New People</div><div class="btn-row"><button class="btn-like" onclick="pick('p6','liked')">👍</button><button class="btn-dislike" onclick="pick('p6','disliked')">👎</button></div></div>
+    <div class="item-card" id="p7"><div class="item-emoji">🤲</div><div class="item-label">Being Helped</div><div class="btn-row"><button class="btn-like" onclick="pick('p7','liked')">👍</button><button class="btn-dislike" onclick="pick('p7','disliked')">👎</button></div></div>
+    <div class="item-card" id="p8"><div class="item-emoji">⭐</div><div class="item-label">Praise</div><div class="btn-row"><button class="btn-like" onclick="pick('p8','liked')">👍</button><button class="btn-dislike" onclick="pick('p8','disliked')">👎</button></div></div>
+    <div class="item-card" id="p9"><div class="item-emoji">✋</div><div class="item-label">High Fives</div><div class="btn-row"><button class="btn-like" onclick="pick('p9','liked')">👍</button><button class="btn-dislike" onclick="pick('p9','disliked')">👎</button></div></div>
+    <div class="item-card" id="p10"><div class="item-emoji">⏳</div><div class="item-label">Waiting &amp; Turns</div><div class="btn-row"><button class="btn-like" onclick="pick('p10','liked')">👍</button><button class="btn-dislike" onclick="pick('p10','disliked')">👎</button></div></div>
+    <div class="item-card" id="p11"><div class="item-emoji">👀</div><div class="item-label">Eye Contact</div><div class="btn-row"><button class="btn-like" onclick="pick('p11','liked')">👍</button><button class="btn-dislike" onclick="pick('p11','disliked')">👎</button></div></div>
+  </div>
+</div>
+
+<!-- Summary -->
+<div id="summary">
+  <h2>📋 My Answers</h2>
+  <div class="summary-cols">
+    <div class="sum-likes">
+      <span class="sum-title">👍 LIKES</span>
+      <ul id="likes-list"><li style="opacity:0.5">None yet</li></ul>
+    </div>
+    <div class="sum-dislikes">
+      <span class="sum-title">👎 DISLIKES</span>
+      <ul id="dislikes-list"><li style="opacity:0.5">None yet</li></ul>
+    </div>
+  </div>
+</div>
+
+<div class="action-btns">
+  <button class="print-btn" onclick="window.print()">🖨️ Print Summary</button>
+  <button class="reset-btn" onclick="resetAll()">↺ Start Over</button>
+</div>
+
+<script>
+// Map each card id to its label and emoji
+const itemMap = {
+  c0:  {e:'🍕', l:'Pizza'},       c1:  {e:'🍓', l:'Fruit'},        c2:  {e:'🥦', l:'Vegetables'},
+  c3:  {e:'🍗', l:'Chicken'},     c4:  {e:'🍟', l:'Chips/Fries'},  c5:  {e:'🍪', l:'Cookies'},
+  c6:  {e:'💧', l:'Water'},       c7:  {e:'🧃', l:'Juice'},         c8:  {e:'🍝', l:'Pasta'},
+  c9:  {e:'🥪', l:'Sandwiches'},  c10: {e:'🍦', l:'Ice Cream'},     c11: {e:'🥣', l:'Cereal'},
+  a0:  {e:'🎵', l:'Music'},       a1:  {e:'✏️', l:'Drawing'},       a2:  {e:'📺', l:'Videos/TV'},
+  a3:  {e:'📚', l:'Reading'},     a4:  {e:'🌳', l:'Outside'},       a5:  {e:'🎨', l:'Coloring'},
+  a6:  {e:'💃', l:'Dancing'},     a7:  {e:'🎮', l:'Video Games'},   a8:  {e:'🧩', l:'Puzzles'},
+  a9:  {e:'🧱', l:'Building'},    a10: {e:'⚽', l:'Sports'},        a11: {e:'🏊', l:'Swimming'},
+  s0:  {e:'📢', l:'Loud Sounds'}, s1:  {e:'🎶', l:'Soft Music'},    s2:  {e:'💡', l:'Bright Lights'},
+  s3:  {e:'🌙', l:'Dim Lights'},  s4:  {e:'🧸', l:'Soft Textures'}, s5:  {e:'🪨', l:'Rough Textures'},
+  s6:  {e:'👕', l:'Tight Clothes'},s7: {e:'🤗', l:'Hugs'},          s8:  {e:'🌸', l:'Strong Smells'},
+  s9:  {e:'💨', l:'Fans/Wind'},   s10: {e:'👥', l:'Crowds'},        s11: {e:'🌀', l:'Spinning'},
+  p0:  {e:'👫', l:'Friends'},     p1:  {e:'👨‍👩‍👧', l:'Family'},       p2:  {e:'👩‍🏫', l:'Teachers'},
+  p3:  {e:'💬', l:'Talking'},     p4:  {e:'🧍', l:'Being Alone'},   p5:  {e:'👐', l:'Group Time'},
+  p6:  {e:'🙋', l:'New People'},  p7:  {e:'🤲', l:'Being Helped'},  p8:  {e:'⭐', l:'Praise'},
+  p9:  {e:'✋', l:'High Fives'},  p10: {e:'⏳', l:'Waiting/Turns'}, p11: {e:'👀', l:'Eye Contact'}
+};
+
+const state = {};
+
+function pick(id, choice) {
+  if (state[id] === choice) {
+    state[id] = null;
+  } else {
+    state[id] = choice;
+  }
+  const card = document.getElementById(id);
+  card.className = 'item-card' + (state[id] === 'liked' ? ' liked' : state[id] === 'disliked' ? ' disliked' : '');
+  updateSummary();
+}
+
+function updateSummary() {
+  const likes = [], dislikes = [];
+  for (const id in state) {
+    if (!state[id]) continue;
+    const item = itemMap[id];
+    if (state[id] === 'liked') likes.push(item);
+    else dislikes.push(item);
+  }
+  const summary = document.getElementById('summary');
+  summary.style.display = (likes.length + dislikes.length) > 0 ? 'block' : 'none';
+  document.getElementById('likes-list').innerHTML = likes.length
+    ? likes.map(i => `<li>${i.e} ${i.l}</li>`).join('')
+    : '<li style="opacity:0.5">None yet</li>';
+  document.getElementById('dislikes-list').innerHTML = dislikes.length
+    ? dislikes.map(i => `<li>${i.e} ${i.l}</li>`).join('')
+    : '<li style="opacity:0.5">None yet</li>';
+}
+
+function resetAll() {
+  for (const id in state) { state[id] = null; }
+  document.querySelectorAll('.item-card').forEach(c => c.className = 'item-card');
+  updateSummary();
+}
+</script>
+</body>
+</html>
